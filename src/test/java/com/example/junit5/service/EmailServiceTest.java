@@ -3,9 +3,7 @@ package com.example.junit5.service;
 import com.example.junit5.constant.Colors;
 import com.example.junit5.exception.MailingException;
 import com.example.junit5.model.User;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +28,7 @@ class EmailServiceTest {
   }
 
   @Test
+  @Disabled
   void sendEmailWithBody() {
     User recipient = new User("any@gmail.com");
 
@@ -37,6 +36,7 @@ class EmailServiceTest {
   }
 
   @Test
+  @DisplayName("Send Email Without Message")
   void sendEmailWithoutBody() {
     User recipient = new User("any@gmail.com");
 
