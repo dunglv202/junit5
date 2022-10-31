@@ -16,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EmailServiceTest {
+  // @EnabledIf...
+
   EmailServiceTest() {
     System.out.println(Colors.ANSI_GREEN + "Creating new instance of EmailServiceTest");
   }
@@ -40,6 +42,7 @@ class EmailServiceTest {
   void sendEmailWithoutBody() {
     User recipient = new User("any@gmail.com");
 
+    Assumptions.assumeTrue(recipient.getEmail() != null);
     assertThrows(MailingException.class, () -> emailService.sendEmail(recipient, null));
   }
 }
