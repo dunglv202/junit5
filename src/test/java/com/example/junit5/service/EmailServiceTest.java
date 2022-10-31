@@ -3,15 +3,16 @@ package com.example.junit5.service;
 import com.example.junit5.constant.Colors;
 import com.example.junit5.exception.MailingException;
 import com.example.junit5.model.User;
+import com.example.junit5.service.impl.EmailServiceImpl;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIf;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assumptions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Tags(value = @Tag("mail"))
 class EmailServiceTest {
   // @EnabledIf..., @Tag
 
@@ -23,7 +24,7 @@ class EmailServiceTest {
 
   @BeforeAll
   public void init() {
-    emailService = new EmailService();
+    emailService = new EmailServiceImpl();
   }
 
   @Test
