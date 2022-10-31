@@ -4,8 +4,14 @@ import com.example.junit5.constant.Colors;
 import com.example.junit5.exception.MailingException;
 import com.example.junit5.model.User;
 import com.example.junit5.service.impl.EmailServiceImpl;
+import com.example.junit5.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIf;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assumptions.*;
@@ -13,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tags(value = @Tag("mail"))
+@ExtendWith(MockitoExtension.class)
 class EmailServiceTest {
   // @EnabledIf..., @Tag
 
@@ -20,11 +27,20 @@ class EmailServiceTest {
     System.out.println(Colors.ANSI_GREEN + "Creating new instance of EmailServiceTest");
   }
 
-  private EmailService emailService;
+  @Spy
+  private UserService userService = new UserServiceImpl();
+
+  @InjectMocks
+  private EmailServiceImpl emailService;
 
   @BeforeAll
-  public void init() {
-    emailService = new EmailServiceImpl();
+  void init() {
+  }
+
+  @BeforeEach
+  void initTest() {
+    // using lenient() to "bypass" strict stubbing
+    Mockito.lenient().doReturn("fixed@gmail.com").when(userService).getEmailAddressFor(Mockito.any());
   }
 
   @Test
@@ -46,20 +62,23 @@ class EmailServiceTest {
 
   @Test
   void sendEmailForOrdinaryCases() {
+
     assertAll(
       // first condition
       () -> {
         assertDoesNotThrow(() -> {
-          emailService.sendEmail(new User("anyuser@gmail.com"), "hmm...");
-        });
-      },
-
-      // second condition
-      () -> {
-        assertDoesNotThrow(() -> {
-          emailService.sendEmail(new User("an-user@gmail.com"), "good!");
+          emailService.sendEmail(new User("anyuser@gmail.com"), "Hmm...");
         });
       }
+
+      // second condition
+//      () -> {
+//        assertThatThrownBy(() -> {
+//          emailService.sendEmail(null , "good!");
+//        }).isInstanceOf(IllegalArgumentException.class);
+//
+//        Mockito.verify(userService).getEmailAddressFor(Mockito.any(User.class));
+//      }
     );
   }
 
