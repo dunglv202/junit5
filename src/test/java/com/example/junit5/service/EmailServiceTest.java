@@ -45,4 +45,23 @@ class EmailServiceTest {
     Assumptions.assumeTrue(recipient.getEmail() != null);
     assertThrows(MailingException.class, () -> emailService.sendEmail(recipient, null));
   }
+
+  @Test
+  void sendEmailForOrdinaryCases() {
+    assertAll(
+      // first test
+      () -> {
+        assertDoesNotThrow(() -> {
+          emailService.sendEmail(new User("anyuser@gmail.com"), "hmm...");
+        });
+      },
+
+      // second test
+      () -> {
+        assertDoesNotThrow(() -> {
+          emailService.sendEmail(new User("an-user@gmail.com"), "good!");
+        });
+      }
+    );
+  }
 }
