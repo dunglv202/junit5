@@ -4,19 +4,16 @@ import com.example.junit5.constant.Colors;
 import com.example.junit5.exception.MailingException;
 import com.example.junit5.model.User;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.junit.jupiter.api.condition.EnabledIf;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assumptions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EmailServiceTest {
-  // @EnabledIf...
+  // @EnabledIf..., @Tag
 
   EmailServiceTest() {
     System.out.println(Colors.ANSI_GREEN + "Creating new instance of EmailServiceTest");
@@ -30,7 +27,7 @@ class EmailServiceTest {
   }
 
   @Test
-  @Disabled
+  @Disabled("Disabled until bug #42 has been resolved")
   void sendEmailWithBody() {
     User recipient = new User("any@gmail.com");
 
@@ -49,19 +46,33 @@ class EmailServiceTest {
   @Test
   void sendEmailForOrdinaryCases() {
     assertAll(
-      // first test
+      // first condition
       () -> {
         assertDoesNotThrow(() -> {
           emailService.sendEmail(new User("anyuser@gmail.com"), "hmm...");
         });
       },
 
-      // second test
+      // second condition
       () -> {
         assertDoesNotThrow(() -> {
           emailService.sendEmail(new User("an-user@gmail.com"), "good!");
         });
       }
     );
+  }
+
+  @Test
+//  @EnabledIf("isUsingAssertJ")
+  @EnabledIf("com.example.junit5.service.EmailServiceTest#isUsingAssertJ")
+  void testSendEmailWithAssertJ() {
+    User user = new User("any@gmail.com");
+
+    assumeThat(user).isNotNull();
+    assertThatThrownBy(() -> emailService.sendEmail(user, null)).isInstanceOf(MailingException.class);
+  }
+
+  static boolean isUsingAssertJ() {
+    return true;
   }
 }
