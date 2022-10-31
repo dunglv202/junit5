@@ -8,9 +8,7 @@ import com.example.junit5.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIf;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.*;
@@ -33,6 +31,9 @@ class EmailServiceTest {
   @InjectMocks
   private EmailServiceImpl emailService;
 
+  @Captor
+  private ArgumentCaptor<User> argumentCaptor;
+
   @BeforeAll
   void init() {
   }
@@ -40,15 +41,20 @@ class EmailServiceTest {
   @BeforeEach
   void initTest() {
     // using lenient() to "bypass" strict stubbing
-    Mockito.lenient().doReturn("fixed@gmail.com").when(userService).getEmailAddressFor(Mockito.any());
+//    Mockito.lenient().doReturn("fixed@gmail.com").when(userService).getEmailAddressFor(Mockito.any());
   }
 
   @Test
-  @Disabled("Disabled until bug #42 has been resolved")
+//  @Disabled("Disabled until bug #42 has been resolved")
   void sendEmailWithBody() {
     User recipient = new User("any@gmail.com");
 
     assertDoesNotThrow(() -> emailService.sendEmail(recipient, "any message"));
+
+    // Another way to capture argument
+//    ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+    Mockito.verify(userService).getEmailAddressFor(argumentCaptor.capture());
+    assertThat(argumentCaptor.getValue()).isEqualTo(recipient);
   }
 
   @Test
@@ -69,16 +75,14 @@ class EmailServiceTest {
         assertDoesNotThrow(() -> {
           emailService.sendEmail(new User("anyuser@gmail.com"), "Hmm...");
         });
-      }
+      },
 
       // second condition
-//      () -> {
-//        assertThatThrownBy(() -> {
-//          emailService.sendEmail(null , "good!");
-//        }).isInstanceOf(IllegalArgumentException.class);
-//
-//        Mockito.verify(userService).getEmailAddressFor(Mockito.any(User.class));
-//      }
+      () -> {
+        assertThatThrownBy(() -> {
+          emailService.sendEmail(null , "good!");
+        }).isInstanceOf(IllegalArgumentException.class);
+      }
     );
   }
 
