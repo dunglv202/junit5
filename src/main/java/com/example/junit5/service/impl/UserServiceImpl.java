@@ -28,4 +28,10 @@ public class UserServiceImpl implements UserService {
     return Optional.of(user.getEmail()).orElseThrow(NotFoundException::new);
   }
 
+  @Override
+  public void addUser(User user) {
+    // save user to db
+    // just skip this for now, we will use mock instead in order to focus on testing
+  }
+
 }
