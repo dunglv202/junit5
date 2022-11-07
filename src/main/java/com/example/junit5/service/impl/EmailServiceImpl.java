@@ -10,12 +10,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmailServiceImpl implements EmailService {
-  private UserService userService;
-
   @Autowired
-  public EmailServiceImpl(UserService userService) {
-    this.userService = userService;
-  }
+  private UserService userService;
 
   public void sendEmail(User user, String message) {
     // check for validation

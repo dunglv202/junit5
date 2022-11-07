@@ -3,6 +3,8 @@ package com.example.junit5.service;
 import com.example.junit5.model.User;
 import com.example.junit5.repository.UserRepository;
 import com.example.junit5.service.impl.UserServiceImpl;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,7 +34,7 @@ class UserServiceTest {
 
   @Test
   void getAllUser() {
-    List<User> users = List.of(new User("any@gmail.com"), new User("guest@gmail.com"));
+      List<User> users = List.of(new User("any@gmail.com"), new User("guest@gmail.com"));
     Mockito.when(userRepository.findAll()).thenReturn(users);
 
     assertIterableEquals(users, userService.getAllUser());
@@ -40,4 +42,20 @@ class UserServiceTest {
     Mockito.verify(userRepository).findAll();
   }
 
+  @Nested
+  @DisplayName(value="Nested class for getEmailAddressFor method")
+  class GetEmailAddressFor {
+    @Test
+    void verifyUserIsNull() {
+
+    }
+    @Test
+    void verifyUserIsNotNullAndEmailIsNull() {
+
+    }
+    @Test
+    void verifyUserIsNotNullAndEmailIsNotNull() {
+
+    }
+  }
 }

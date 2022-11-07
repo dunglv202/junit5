@@ -41,11 +41,12 @@ class EmailServiceTest {
   @BeforeEach
   void initTest() {
     // using lenient() to "bypass" strict stubbing
-//    Mockito.lenient().doReturn("fixed@gmail.com").when(userService).getEmailAddressFor(Mockito.any());
+    Mockito.lenient().doReturn("fixed@gmail.com").when(userService).getEmailAddressFor(Mockito.any(User.class));
   }
 
   @Test
 //  @Disabled("Disabled until bug #42 has been resolved")
+  @DisplayName("Test")
   void sendEmailWithBody() {
     User recipient = new User("any@gmail.com");
 
@@ -88,11 +89,11 @@ class EmailServiceTest {
 
   @Test
 //  @EnabledIf("isUsingAssertJ")
-  @EnabledIf("com.example.junit5.service.EmailServiceTest#isUsingAssertJ")
+//  @EnabledIf("com.example.junit5.service.EmailServiceTest#isUsingAssertJ")
   void testSendEmailWithAssertJ() {
     User user = new User("any@gmail.com");
 
-    assumeThat(user).isNotNull();
+    assumeThat(user).isNull();
     assertThatThrownBy(() -> emailService.sendEmail(user, null)).isInstanceOf(MailingException.class);
   }
 
